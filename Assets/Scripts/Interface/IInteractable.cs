@@ -1,4 +1,4 @@
-﻿interface IInteractable: ISelectable
-{   
-
+﻿interface IInteractable
+{
+    //bool IsInUse { get; set; }
 }

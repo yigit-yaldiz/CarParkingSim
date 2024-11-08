@@ -12,6 +12,16 @@ public class Character : MonoBehaviour
         _characterController = GetComponent<CharacterController>();
     }
 
+    private void OnEnable()
+    {
+        InputManager.GetInVehicle += Disappear;
+    }
+
+    private void OnDisable()
+    {
+        InputManager.GetInVehicle -= Disappear;
+    }
+
     private void Update()
     {
         Move();
@@ -29,5 +39,10 @@ public class Character : MonoBehaviour
 
             transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, _rotatoionSpeed * Time.deltaTime);
         }
+    }
+
+    void Disappear()
+    {
+        gameObject.SetActive(false);
     }
 }

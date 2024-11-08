@@ -17,22 +17,34 @@ public class VehicleController : MonoBehaviour, IVehicle
     [SerializeField] private Transform _frontLeftWheelTransform, _frontRightWheelTransform;
     [SerializeField] private Transform _rearLeftWheelTransform, _rearRightWheelTransform;
 
+    public bool IsInUse { get; set; }
+
+    private void OnEnable()
+    {
+        InputManager.RespawnCar += Respawn;
+    }
+
+    private void OnDisable()
+    {
+        InputManager.RespawnCar -= Respawn;
+    }
+
     private void Update()
     {
         Drive();
-
-        if (Input.GetKeyDown(KeyCode.R) && !_isOnAir)
-        {
-            StartCoroutine(RespawnCar());
-        }
     }
 
     public void Drive()
     {
-        GetInput();
-        HandleMotor();
-        HandleSteering();
-        UpdateWheels();
+        if (StateMachine.Instance.CurrentState == State.Drive)
+        {
+            IsInUse = true;
+
+            GetInput();
+            HandleMotor();
+            HandleSteering();
+            UpdateWheels();
+        }
     }
 
     private void GetInput()
@@ -87,20 +99,31 @@ public class VehicleController : MonoBehaviour, IVehicle
         wheelTransform.position = pos;
     }
 
-    public IEnumerator RespawnCar()
+    void Respawn()
     {
-        _isOnAir = true;
+        if (_isOnAir)
+        {
+            return;
+        }
 
-        Quaternion newRotation = Quaternion.Euler(0, transform.rotation.y, 0);
-        transform.rotation = newRotation;
+        StartCoroutine(RespawnCar());
+        
+        IEnumerator RespawnCar()
+        {
+            _isOnAir = true;
 
-        Vector3 newPos= new(transform.position.x, transform.position.y + 0.75f, transform.position.z);
-        transform.position = Vector3.Lerp(newPos, transform.position, 0.1f);
+            Quaternion newRotation = Quaternion.Euler(0, transform.rotation.y, 0);
+            transform.rotation = newRotation;
 
-        Rigidbody rb = GetComponent<Rigidbody>();
-        rb.velocity = Vector3.zero;
+            Vector3 newPos= new(transform.position.x, transform.position.y + 0.75f, transform.position.z);
+            transform.position = Vector3.Lerp(newPos, transform.position, 0.1f);
 
-        yield return new WaitForSeconds(1f);
-        _isOnAir = false;
+            Rigidbody rb = GetComponent<Rigidbody>();
+            rb.velocity = Vector3.zero;
+
+            yield return new WaitForSeconds(1f);
+            _isOnAir = false;
+        }
     }
+
 }

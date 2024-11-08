@@ -13,8 +13,23 @@ public class CameraManager : MonoBehaviour
         _virtualCamera = GetComponentInChildren<CinemachineVirtualCamera>();
     }
 
+    private void OnEnable()
+    {
+        InputManager.GetInVehicle += ChangeCameraToCurrentInteraction;
+    }
+
+    private void OnDisable()
+    {
+        InputManager.GetInVehicle -= ChangeCameraToCurrentInteraction;
+    }
+
     public void ChangeCameraPosition(Transform target)
     {
         _virtualCamera.Follow = target;
+    }
+
+    void ChangeCameraToCurrentInteraction()
+    {
+        ChangeCameraPosition(InteractionController.CurrentInteraction);
     }
 }
