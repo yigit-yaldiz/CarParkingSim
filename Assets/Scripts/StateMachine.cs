@@ -21,12 +21,14 @@ public class StateMachine : MonoBehaviour
 
     private void OnEnable()
     {
-        InputManager.GetInVehicle += ChangeStateToDrive;
+        InputManager.GetIn += ChangeStateToDrive;
+        InputManager.GetOut += ChangeStateToWalk;
     }
 
     private void OnDisable()
     {
-        InputManager.GetInVehicle -= ChangeStateToDrive;
+        InputManager.GetIn -= ChangeStateToDrive;
+        InputManager.GetOut -= ChangeStateToWalk;
     }
 
     public void ChangeState(State state)
@@ -36,6 +38,11 @@ public class StateMachine : MonoBehaviour
 
     void ChangeStateToDrive()
     {
-        _currentState = State.Drive;
+        ChangeState(State.Drive);
+    }
+
+    void ChangeStateToWalk()
+    {
+        ChangeState(State.Walk);
     }
 }

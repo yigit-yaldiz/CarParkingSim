@@ -15,12 +15,14 @@ public class CameraManager : MonoBehaviour
 
     private void OnEnable()
     {
-        InputManager.GetInVehicle += ChangeCameraToCurrentInteraction;
+        InputManager.GetIn += ChangeCameraToCurrentInteraction;
+        InputManager.GetOut += ChangeCameraToPlayer;
     }
 
     private void OnDisable()
     {
-        InputManager.GetInVehicle -= ChangeCameraToCurrentInteraction;
+        InputManager.GetIn -= ChangeCameraToCurrentInteraction;
+        InputManager.GetOut -= ChangeCameraToPlayer;
     }
 
     public void ChangeCameraPosition(Transform target)
@@ -31,5 +33,10 @@ public class CameraManager : MonoBehaviour
     void ChangeCameraToCurrentInteraction()
     {
         ChangeCameraPosition(InteractionController.CurrentInteraction);
+    }
+
+    void ChangeCameraToPlayer()
+    {
+        ChangeCameraPosition(Character.Instance.transform);
     }
 }

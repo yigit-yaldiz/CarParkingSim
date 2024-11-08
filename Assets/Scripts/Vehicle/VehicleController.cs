@@ -36,15 +36,17 @@ public class VehicleController : MonoBehaviour, IVehicle
 
     public void Drive()
     {
-        if (StateMachine.Instance.CurrentState == State.Drive)
+        if (StateMachine.Instance.CurrentState != State.Drive)
         {
-            IsInUse = true;
-
-            GetInput();
-            HandleMotor();
-            HandleSteering();
-            UpdateWheels();
+            return;
         }
+        
+        IsInUse = true;
+
+        GetInput();
+        HandleMotor();
+        HandleSteering();
+        UpdateWheels();
     }
 
     private void GetInput()

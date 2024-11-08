@@ -27,6 +27,11 @@ public class InteractionController : MonoBehaviour
 
     void CastCone()
     {
+        if (StateMachine.Instance.CurrentState != State.Walk)
+        {
+            return;
+        }
+
         Vector3 origin = transform.position;
         Vector3 forward = transform.forward;
         float halfAngle = _coneAngle / 2f;
@@ -53,7 +58,7 @@ public class InteractionController : MonoBehaviour
             }
         }
 
-        //Debug.Log(_currentInteraction);
+        Debug.Log(_currentInteraction);
     }
 
     InteractionType FindIntreactionType(RaycastHit hit)
