@@ -13,18 +13,12 @@ namespace StateMachineBehaviour
 
         public override void Update()
         {
-            base.Update();
             InteractionController.Instance.CastCone();
         }
 
         public override void FixedUpdate()
         {
             _playerController.Move();
-        }
-
-        public override void OnExit()
-        {
-            Debug.Log("Existing from Lokomotion State");
         }
     }
 }

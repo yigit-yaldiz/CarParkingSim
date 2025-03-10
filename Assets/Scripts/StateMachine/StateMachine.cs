@@ -36,6 +36,10 @@ namespace StateMachineBehaviour
 
             var previousState = _current.State;
             var nextState = _nodes[state.GetType()].State;
+
+            previousState?.OnExit();
+            nextState?.OnEnter();
+            _current = _nodes[state.GetType()];
         }
 
         ITransition GetTransition()
