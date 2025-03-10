@@ -36,7 +36,7 @@ public class VehicleController : MonoBehaviour, IVehicle
 
     public void Drive()
     {
-        if (StateMachine.Instance.CurrentState != State.Drive)
+        if (States.Instance.CurrentState != State.Drive)
         {
             return;
         }

@@ -13,21 +13,23 @@ public class InteractionController : MonoBehaviour
     [SerializeField] InteractionType _currentType;
     static Transform _currentInteraction;
 
-    const float _coneAngle = 45f;  
+    const float _coneAngle = 60f;  
     const float _rayRange = 5f;   
     const int _rayCount = 10;
 
     public InteractionType CurrentType  => _currentType;
     public static Transform CurrentInteraction => _currentInteraction;
 
-    private void Update() //its not finished. First we need to take if is interacable. After that which type of interacable we need to find
+    public static InteractionController Instance { get; private set; }        
+
+    private void Awake()
     {
-        CastCone();
+        Instance = this;
     }
 
-    void CastCone()
+    public void CastCone() //its not finished. First we need to take if is interacable. After that which type of interacable we need to find
     {
-        if (StateMachine.Instance.CurrentState != State.Walk)
+        if (States.Instance.CurrentState != State.Walk)
         {
             return;
         }
@@ -58,7 +60,7 @@ public class InteractionController : MonoBehaviour
             }
         }
 
-        Debug.Log(_currentInteraction);
+        //Debug.Log(_currentInteraction);
     }
 
     InteractionType FindIntreactionType(RaycastHit hit)

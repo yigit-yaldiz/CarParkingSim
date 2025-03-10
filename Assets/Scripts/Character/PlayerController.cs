@@ -1,18 +1,36 @@
+using StateMachineBehaviour;
 using UnityEngine;
 
-public class Character : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [SerializeField] float _speed;
     [SerializeField] float _rotatoionSpeed;
 
     CharacterController _characterController;
+    StateMachine _stateMachine;
 
-    public static Character Instance { get; private set; }
+    bool _isDriving;
+
+    public static PlayerController Instance { get; private set; }
 
     private void Awake()
     {
         Instance = this;
         _characterController = GetComponent<CharacterController>();
+        
+        //state machine
+        _stateMachine = new();
+
+        //defining states
+        var locomotionState = new LokomotionState(this);
+        var drivingState = new DrivingState(this);
+
+        //defining transitions
+        At(locomotionState, drivingState, new FuncPredicate(() => _isDriving));
+        At(drivingState, locomotionState, new FuncPredicate(() => !_isDriving));
+
+        //set initial state
+        _stateMachine.SetState(locomotionState);
     }
 
     private void OnEnable()
@@ -29,17 +47,22 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
-        Move();
+        _stateMachine.Update();
     }
 
-    private void Move()
+    private void FixedUpdate()
     {
-        if (StateMachine.Instance.CurrentState != State.Walk)
+        _stateMachine.FixedUpdate();
+    }
+
+    public void Move()
+    {
+        if (States.Instance.CurrentState != State.Walk)
         {
             return;
         }
 
-        Vector3 movement = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        Vector3 movement = new(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
 
         _characterController.Move(movement * (Time.deltaTime * _speed));
 
@@ -51,7 +74,10 @@ public class Character : MonoBehaviour
         }
     }
 
-    void Disappear()
+    void At(IState from, IState to, IPredicate condition) => _stateMachine.AddTransition(from, to, condition);
+    void Any(IState to, IPredicate condition) => _stateMachine.AddAnyTransition(to, condition);
+
+    public void Disappear()
     {
         MeshRenderer[] renderers = GetComponentsInChildren<MeshRenderer>();
         Collider[] colliders = GetComponentsInChildren<Collider>();
@@ -65,9 +91,11 @@ public class Character : MonoBehaviour
         {
             collider.enabled = false;
         }
+
+        _isDriving = true;
     }
 
-    void Appear()
+    public void Appear()
     {
         MeshRenderer[] renderers = GetComponentsInChildren<MeshRenderer>();
         Collider[] colliders = GetComponentsInChildren<Collider>();
@@ -82,6 +110,13 @@ public class Character : MonoBehaviour
             collider.enabled = true;
         }
 
-        transform.position = InteractionController.CurrentInteraction.GetComponentInChildren<SpawnPosition>().transform.position;
+        Vector3 newPos;
+        newPos.x = InteractionController.CurrentInteraction.position.x - 4;
+        newPos.y = transform.position.y;
+        newPos.z = transform.position.z;
+
+        transform.position = newPos;
+
+        _isDriving = false;
     }
 }

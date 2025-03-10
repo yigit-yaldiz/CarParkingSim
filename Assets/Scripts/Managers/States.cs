@@ -7,9 +7,9 @@ public enum State
     Drive
 }
 
-public class StateMachine : MonoBehaviour
+public class States : MonoBehaviour
 {
-    public static StateMachine Instance { get; private set; }
+    public static States Instance { get; private set; }
     public State CurrentState  => _currentState;
 
     [SerializeField] State _currentState;

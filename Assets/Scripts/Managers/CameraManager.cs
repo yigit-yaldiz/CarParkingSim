@@ -37,6 +37,6 @@ public class CameraManager : MonoBehaviour
 
     void ChangeCameraToPlayer()
     {
-        ChangeCameraPosition(Character.Instance.transform);
+        ChangeCameraPosition(PlayerController.Instance.transform);
     }
 }

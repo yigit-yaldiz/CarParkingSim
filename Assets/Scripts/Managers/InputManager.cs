@@ -16,12 +16,12 @@ public class InputManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R) && StateMachine.Instance.CurrentState == State.Drive)
+        if (Input.GetKeyDown(KeyCode.R) && States.Instance.CurrentState == State.Drive)
         {
             RespawnCar();
         }
 
-        if (Input.GetKeyDown(KeyCode.F) && StateMachine.Instance.CurrentState == State.Walk)
+        if (Input.GetKeyDown(KeyCode.F) && States.Instance.CurrentState == State.Walk)
         {
             if (InteractionController.CurrentInteraction == null)
             {
@@ -31,7 +31,7 @@ public class InputManager : MonoBehaviour
 
             GetIn();
         }
-        else if (Input.GetKeyDown(KeyCode.F) && StateMachine.Instance.CurrentState == State.Drive)
+        else if (Input.GetKeyDown(KeyCode.F) && States.Instance.CurrentState == State.Drive)
         {
             GetOut();
         }
